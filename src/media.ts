@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { open } from "@tauri-apps/plugin-dialog";
 import { readFile } from "@tauri-apps/plugin-fs";
+import { popAlert } from "./alert";
 
 let file: string | null;
 
@@ -24,7 +25,24 @@ export function initMediaPreview() {
       directory: false,
       filters: [{
         name: "Default",
-        extensions: ['png', 'jpg', 'jpeg']
+        extensions: [
+          "avif",
+          "bmp",
+          "dds",
+          "exr",
+          "ff",
+          "gif",
+          "hdr",
+          "ico",
+          "jpg",
+          "jpeg",
+          "png",
+          "pnm",
+          "qoi",
+          "tga",
+          "tiff",
+          "webp",
+        ]
       }]
     })
 
@@ -76,8 +94,8 @@ async function enablePreview(filepath: string) {
   sendMediaButton.classList.remove("btn-disabled");
 }
 
-export function initSendMedia(){
-  const usernameInput = document.getElementById('usernameInput') as HTMLInputElement;  
+export function initSendMedia() {
+  const usernameInput = document.getElementById('usernameInput') as HTMLInputElement;
   const sendMediaButton = document.getElementById("sendMediaButton") as HTMLButtonElement;
 
   const messageTopInput = document.getElementById("messageTopInput") as HTMLInputElement;
@@ -86,11 +104,16 @@ export function initSendMedia(){
 
   sendMediaButton.addEventListener("click", async () => {
     await invoke("send_media", {
-      filepath: file, 
-      topMessage: messageTopInput.value, 
-      bottomMessage: messageBottomInput.value, 
-      user: {username: usernameInput.value},
+      filepath: file,
+      topMessage: messageTopInput.value,
+      bottomMessage: messageBottomInput.value,
+      user: { username: usernameInput.value },
       timeout: parseInt(timeoutRange.value) * 1000
+    }).then(() => {
+      popAlert("success", "Media fired !!", null);
+    }, (error) => {
+      popAlert("error", "Error while sending media", error);
     })
   })
 }
+

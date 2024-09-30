@@ -1,7 +1,7 @@
 import { Store } from "@tauri-apps/plugin-store";
 import { initStoredValues, restoreStoreValues } from "./store";
 import { initPingStatus } from "./ping";
-import { initDropListener, initMediaPreview, initSendMedia } from "./media";
+import { initDropListener, initMediaPreview, initSendMedia} from "./media";
 import { initUpdateAvatarPlaceHolder } from "./avatar";
 import { initServerToggle } from "./server";
 import { listen } from "@tauri-apps/api/event";
@@ -24,11 +24,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   const timeoutRange = document.getElementById("timeoutRange") as HTMLInputElement;
   const timeoutFeedback = document.getElementById("timeoutFeedback") as HTMLSpanElement;
   timeoutRange.addEventListener("input", ()=>{
-    console.log(timeoutFeedback.innerText)
     timeoutFeedback.textContent = timeoutRange.value.toString() + "s"
   })
 
   listen<ClientCount>("ff://client_count", (event) => {
-    console.log(event)
+    const clientCount = document.getElementById("clientCount") as HTMLDivElement;
+    clientCount.innerText = event.payload.client_count.toString();
   })
 });
